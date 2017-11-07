@@ -1,7 +1,7 @@
 # A simple script to start a listener for SSA
 export SSH_AUTH_SOCK=$(mktemp -u)
 
-socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork,umask=177 EXEC:"qubes.SshAgent" &
+socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork,umask=177 EXEC:"secure-ssh-agent.agent" &
 
 export SSH_AGENT_PID=$!
 echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK; export SSH_AUTH_SOCK;"
