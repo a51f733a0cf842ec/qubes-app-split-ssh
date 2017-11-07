@@ -1,9 +1,11 @@
+#!/bin/sh
 # A simple script to start a listener for SSA
 export SSH_AUTH_SOCK=$(mktemp -u)
 
-socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork,umask=177 EXEC:"secure-ssh-agent.agent" &
+socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork,umask=177 EXEC:"secure-ssh-agent.agent" 2>&1 > /dev/null < /dev/null &
 
 export SSH_AGENT_PID=$!
+
 echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK; export SSH_AUTH_SOCK;"
 echo "SSH_AGENT_PID=$SSH_AGENT_PID; export SSH_AGENT_PID;"
 echo "echo SSA pid $SSH_AGENT_PID;"
