@@ -1,11 +1,10 @@
 #!/bin/sh
-QUBES_SSH_DIRECTORY="$HOME/.qubes_ssh"
-CLIENT="$QREXEC_REMOTE_DOMAIN"
+SSA_DIRECTORY="$HOME/.ssa"
 TIMEOUT=10
 
-DEFAULT_FILE="$QUBES_SSH_DIRECTORY/.$CLIENT.default"
+DEFAULT_FILE="$SSA_DIRECTORY/.default"
 
-DIALOG_TEXT="\"$CLIENT\" is requesting a ssh key"
+DIALOG_TEXT="A SSH key has been requested. Please choose one, or cancel."
 
 # find_keys() finds all keys and
 find_keys() {
@@ -13,7 +12,7 @@ find_keys() {
   KEYS_STRING=""
   DEFAULT_KEY=$(cat $DEFAULT_FILE)
 
-  for KEY in $QUBES_SSH_DIRECTORY/*.pub; do
+  for KEY in $SSA_DIRECTORY/*.pub; do
     KEY_BASENAME=$(basename $KEY .pub)
 
     # Default key will be already selected in prompt
@@ -31,7 +30,7 @@ find_keys() {
 
 # Prompt user for key selection
 SELECTED=$(zenity --list --radiolist --title "SSH key selection" --text="$DIALOG_TEXT" --column=Select --column=Key $(find_keys) >& /dev/null)
-KEY_FILE=$QUBES_SSH_DIRECTORY/$SELECTED
+KEY_FILE=$SSA_DIRECTORY/$SELECTED
 
 # Exit if nothing selected
 if [ -z $SELECTED ] ; then
@@ -42,8 +41,8 @@ fi
 echo $SELECTED > $DEFAULT_FILE
 
 # Make sure ssh-add is happy with permissions
-chmod 0700 $QUBES_SSH_DIRECTORY
-chmod 0600 $QUBES_SSH_DIRECTORY/*
+chmod 0700 $SSA_DIRECTORY
+chmod 0600 $SSA_DIRECTORY/*
 
 # Start ssh-agent, add key
 eval $(ssh-agent) > /dev/null
