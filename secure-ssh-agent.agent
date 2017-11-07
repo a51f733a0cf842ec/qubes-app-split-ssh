@@ -1,5 +1,11 @@
 #!/bin/sh
 SSA_DIRECTORY="$HOME/.ssa"
+
+if [ ! -d $SSA_DIRECTORY ] ; then
+  echo "Directory '$SSA_DIRECTORY' not found" 1>&2
+  exit 1
+fi
+
 TIMEOUT=10
 
 DEFAULT_FILE="$SSA_DIRECTORY/.default"
@@ -53,7 +59,7 @@ socat - UNIX-CONNECT:$SSH_AUTH_SOCK &
 SOCAT_PID=$!
 
 if [ $TIMEOUT -gt 0 ] ; then
-  (sleep $TIMEOUT && kill $SOCAT_PID) &
+  (sleep $TIMEOUT && kill $SOCAT_PID 2> /dev/null) &
 fi
 
 wait $SOCAT_PID
